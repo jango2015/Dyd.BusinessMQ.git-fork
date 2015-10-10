@@ -1,0 +1,85 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.manage.MqPathPartitionModel>
+@{
+    ViewBag.Title = "队列分区管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function Delete(id) {
+        if (confirm("移除分区后,需要确认等待一段时间,确认该分区的消费者已将分区剩余的消息消费完毕再进行删除操作,否则会造成该分区消费信息丢失,确认要删除分区吗？")) {
+            $.ajax({
+                url: '@Url.Action("Delete","QueuePartition")',
+                type: "post",
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    if (data.code > 0) {
+                        alert("成功！");
+                        window.location = window.location;
+                    }
+                    else {
+                        alert(data.msg); 
+                    }
+                }
+            })
+        }
+    }
+    function SetState(partitionid, state) {
+        if (confirm("确定设置分区为待移除状态吗？")) {//
+                $.ajax({
+                    url: '@Url.Action("SetState","QueuePartition")',
+                    type: "post",
+                    data: {
+                        partitionid: partitionid, state: state
+                    },
+                    success: function (data) {
+                        if (data.code > 0) {
+                            alert("成功！");
+                            window.location = window.location;
+                        }
+                        else {
+                            alert(data.msg);
+                        }
+                    }
+                })
+            }
+    }
+</script>
+@section Scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @{Html.RegisterMvcPagerScriptResource();}
+}
+<div class="head">
+    <div class="title">
+        队列分区管理  @Html.Raw(Dyd.BusinessMQ.Web.Base.CommonHelper.Help(@"队列的分区管理,用于队列的分区分配及删除操作;注意：
+队列添加分区按照分区顺序添加，队列删除分区按照分区顺序删除;
+一个分区只能分配个一个队列,一个队列可以有多个分区,删除分区前要先移除分区,并在确认分区消息全部消费完毕后移除分区;
+否则会导致被移除的分区部分消息不被消费;当然也可手工从数据库迁移被移除的消息至未移除的分区;对队列分区的操作将会通知队列更新,从而通知消费者端和生产者获取最新的分区队列。"))
+    </div>
+</div>
+<div class="orderlist m10 myorder">
+    @using (Html.BeginForm("index", "QueuePartition", FormMethod.Get, new RouteValueDictionary { { "id", "searchForm" } }))
+    {
+        <div class="item_list pt10">
+            <div class="item_list">
+                <ul>
+                    <li>
+                        <label>队列</label>
+                        <input type="text" style="width:150px" name="mqpathid" value="@ViewBag.mqpathid" />
+                        <label>分区编号</label>
+                        <input type="text" style="width:150px" name="partitionId" value="@ViewBag.partitionId" />
+                    </li>
+                    <li class="search">
+                        <input type="submit" class="btn1" value="搜索" accesskey="S" /></li>
+                </ul>
+            </div>
+        </div>
+    }
+    <a href="@Url.Action("add", "QueuePartition")" class="btn1">新增</a>
+    <div class="tab_cont">
+        <div class="List">
+            @Html.Partial("List",Model)
+        </div>
+    </div>
+</div>

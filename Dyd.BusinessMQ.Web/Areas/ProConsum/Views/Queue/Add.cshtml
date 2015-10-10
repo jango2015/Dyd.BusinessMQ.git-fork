@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "新增";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function sub() {
+        if ($("#id").val() == "") {
+            alert("请填写id")
+            return false;
+        }
+        if ($("#mqpath").val() == "") {
+            alert("请填写名称");
+            return false;
+        }
+    }
+</script>
+<div class="head">
+    <div class="title">
+       新增队列
+    </div>
+</div>
+<div>
+    @using (Html.BeginForm("Add", "Queue", FormMethod.Post, new { enctype = "multipart/form-data", @onsubmit = "return sub()" }))
+    {
+    <ul class="mydetail">
+       @* <li>
+            <label>队列编号</label><input  type="text" id="id" name="id" />
+        </li>*@
+        <li> 
+            <label>名称</label><input type="text" id="mqpath" name="mqpath" />（格式:类似类的命名空间方式,如dyd.capi.order.add,能够表达业务的方式，不允许使用数字等无意义的命名方式。）
+        </li>
+        <li>
+            <input type="submit" class="btn1" value="提交" />@Html.ValidationMessage("Error")
+        </li>
+    </ul>
+    }
+</div>

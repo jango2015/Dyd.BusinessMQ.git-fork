@@ -1,0 +1,88 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.manage.MqPathModel>
+@{
+    ViewBag.Title = "队列管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function Delete(id) {
+        if (confirm("确定删除吗？")) {
+            $.ajax({
+                url: '@Url.Action("Delete","Queue")',
+                type: "post",
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    if (data.code > 0) {
+                        alert("成功！");
+                        window.location = window.location;
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }
+    }
+
+    function ReStart(id) {
+        if (confirm("确定通知客户端和生产者端自动重启吗？")) {
+            $.ajax({
+                url: '@Url.Action("ReStart","Queue")',
+                type: "post",
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    if (data.code > 0) {
+                        alert("成功！");
+                        window.location = window.location;
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }
+    }
+</script>
+@section Scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @{Html.RegisterMvcPagerScriptResource();}
+}
+<div class="head">
+    <div class="title">
+        队列管理 @Html.Raw(Dyd.BusinessMQ.Web.Base.CommonHelper.Help(@"队列的管理,用于队列的新建和删除等操作;注意：删除队列,请先确定队列的消费者和生产者都已经被删除,队列无关联分区。重启操作表示通知相关的生产者和消费者自动重启,队列可能导致极少部分消息重新消费,不建议线上频繁执行"))
+    </div>
+</div>
+<div class="orderlist m10 myorder">
+    @using (Html.BeginForm("index", "Queue", FormMethod.Get, new RouteValueDictionary { { "id", "searchForm" } }))
+    {
+        <div class="item_list pt10">
+            <div class="item_list">
+                <ul>
+                    <li>
+                        <label>ID</label>
+                        <input type="text" style="width:150px" name="mqpathid" value="@ViewBag.mqpathid" />
+                        <label>队列名</label>
+                        <input type="text" style="width:200px" name="mqpath" value="@ViewBag.mqpath" />
+                    </li>
+                   @* <li>
+                        <label>创建时间</label><input type="text" class="text" autocomplete="off"name="CStime" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'1900-01-01',readOnly:true})" value="@(string.IsNullOrEmpty(ViewBag.CStime)?"":ViewBag.CStime)" />
+                        至
+                    <input type="text" class="text" autocomplete="off" name="CEtime" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',minDate:'1900-01-01',readOnly:true})" value="@(string.IsNullOrEmpty(ViewBag.CEtime)?"":ViewBag.CEtime)"/>
+                    </li>*@
+                    <li class="search">
+                        <input type="submit" class="btn1" value="搜索" accesskey="S" /></li>
+                </ul>
+            </div>
+        </div>
+    }
+    <a href="@Url.Action("add", "Queue")" class="btn1">新增</a>
+    <div class="tab_cont">
+        <div class="List">
+            @Html.Partial("List",Model)
+        </div>
+    </div>
+</div>

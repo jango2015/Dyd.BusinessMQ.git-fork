@@ -1,0 +1,341 @@
+USE [dyd_bs_MQ_manage]
+GO
+/****** Object:  Table [dbo].[tb_producter]    Script Date: 07/23/2015 09:12:27 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[tb_producter](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[tempid] [bigint] NOT NULL,
+	[productername] [varchar](300) NOT NULL,
+	[ip] [varchar](200) NOT NULL,
+	[mqpathid] [int] NOT NULL,
+	[lastheartbeat] [datetime] NOT NULL,
+	[createtime] [datetime] NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_producter_mqpathid] ON [dbo].[tb_producter] 
+(
+	[mqpathid] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_producter_tempid] ON [dbo].[tb_producter] 
+(
+	[tempid] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'生产者临时id(消费者启动后唯一,Guid转long)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_producter', @level2type=N'COLUMN',@level2name=N'tempid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'生产者名称' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_producter', @level2type=N'COLUMN',@level2name=N'productername'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ip地址' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_producter', @level2type=N'COLUMN',@level2name=N'ip'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'队列id' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_producter', @level2type=N'COLUMN',@level2name=N'mqpathid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'生产者最后心跳时间' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_producter', @level2type=N'COLUMN',@level2name=N'lastheartbeat'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'生产者创建时间' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_producter', @level2type=N'COLUMN',@level2name=N'createtime'
+GO
+/****** Object:  Table [dbo].[tb_partition_messagequeue_report]    Script Date: 07/23/2015 09:12:27 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tb_partition_messagequeue_report](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[partitionid] [int] NOT NULL,
+	[day] [date] NOT NULL,
+	[mqmaxid] [bigint] NOT NULL,
+	[mqminid] [bigint] NOT NULL,
+	[mqcount] [int] NOT NULL,
+	[lastupdatetime] [datetime] NOT NULL,
+	[createtime] [datetime] NOT NULL
+) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_partition_messagequeue_report_day] ON [dbo].[tb_partition_messagequeue_report] 
+(
+	[day] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_partition_messagequeue_report_partitionid] ON [dbo].[tb_partition_messagequeue_report] 
+(
+	[partitionid] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'分区编号' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_partition_messagequeue_report', @level2type=N'COLUMN',@level2name=N'partitionid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'日期' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_partition_messagequeue_report', @level2type=N'COLUMN',@level2name=N'day'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'分区最大消息id' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_partition_messagequeue_report', @level2type=N'COLUMN',@level2name=N'mqmaxid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'mq最小消息id' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_partition_messagequeue_report', @level2type=N'COLUMN',@level2name=N'mqminid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'消息数量' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_partition_messagequeue_report', @level2type=N'COLUMN',@level2name=N'mqcount'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'当前分区扫描最后更新时间' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_partition_messagequeue_report', @level2type=N'COLUMN',@level2name=N'lastupdatetime'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'当前分区扫描创建时间' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_partition_messagequeue_report', @level2type=N'COLUMN',@level2name=N'createtime'
+GO
+/****** Object:  Table [dbo].[tb_partition]    Script Date: 07/23/2015 09:12:27 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tb_partition](
+	[partitionid] [int] NOT NULL,
+	[isused] [bit] NOT NULL,
+	[createtime] [datetime] NOT NULL
+) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_partition_partitionid] ON [dbo].[tb_partition] 
+(
+	[partitionid] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'分区id号,规则1+数据节点编号+表分区编号' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_partition', @level2type=N'COLUMN',@level2name=N'partitionid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'是否已使用' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_partition', @level2type=N'COLUMN',@level2name=N'isused'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'创建时间(以当前库时间为准)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_partition', @level2type=N'COLUMN',@level2name=N'createtime'
+GO
+/****** Object:  Table [dbo].[tb_mqpath_partition]    Script Date: 07/23/2015 09:12:27 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tb_mqpath_partition](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[mqpathid] [int] NOT NULL,
+	[partitionid] [int] NOT NULL,
+	[partitionindex] [int] NOT NULL,
+	[state] [tinyint] NOT NULL,
+	[createtime] [datetime] NOT NULL
+) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_mqpath_partition_mqpathid] ON [dbo].[tb_mqpath_partition] 
+(
+	[mqpathid] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_mqpath_partition_partitionid] ON [dbo].[tb_mqpath_partition] 
+(
+	[partitionid] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_mqpath_partition_partitionindex] ON [dbo].[tb_mqpath_partition] 
+(
+	[partitionindex] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'某路径下的mq的id' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_mqpath_partition', @level2type=N'COLUMN',@level2name=N'mqpathid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'分区id编号' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_mqpath_partition', @level2type=N'COLUMN',@level2name=N'partitionid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'分区顺序号(某个路径下mq的顺序号)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_mqpath_partition', @level2type=N'COLUMN',@level2name=N'partitionindex'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'某路径下mq的状态,1 运行中，100 等待数据完全消费完毕' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_mqpath_partition', @level2type=N'COLUMN',@level2name=N'state'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'创建时间(以当前库时间为准)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_mqpath_partition', @level2type=N'COLUMN',@level2name=N'createtime'
+GO
+/****** Object:  Table [dbo].[tb_mqpath]    Script Date: 07/23/2015 09:12:27 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[tb_mqpath](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[mqpath] [varchar](300) NOT NULL,
+	[lastupdatetime] [datetime] NOT NULL,
+	[createtime] [datetime] NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_tb_mqpath_mqpath] ON [dbo].[tb_mqpath] 
+(
+	[mqpath] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'mq路径' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_mqpath', @level2type=N'COLUMN',@level2name=N'mqpath'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'该路径下mq,配置最后更新时间(以当前库时间为准)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_mqpath', @level2type=N'COLUMN',@level2name=N'lastupdatetime'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'mq创建时间(以当前库时间为准)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_mqpath', @level2type=N'COLUMN',@level2name=N'createtime'
+GO
+/****** Object:  Table [dbo].[tb_datanode]    Script Date: 07/23/2015 09:12:27 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[tb_datanode](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[datanodepartition] [int] NOT NULL,
+	[serverip] [varchar](50) NOT NULL,
+	[username] [varchar](50) NOT NULL,
+	[password] [varchar](50) NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_datanode_datanodepartition] ON [dbo].[tb_datanode] 
+(
+	[datanodepartition] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tb_consumer_partition]    Script Date: 07/23/2015 09:12:27 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tb_consumer_partition](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[consumerclientid] [int] NOT NULL,
+	[partitionindex] [int] NOT NULL,
+	[partitionid] [int] NOT NULL,
+	[lastconsumertempid] [bigint] NOT NULL,
+	[lastmqid] [bigint] NOT NULL,
+	[lastupdatetime] [datetime] NOT NULL,
+	[createtime] [datetime] NOT NULL
+) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_consumer_partition_consumerclientid] ON [dbo].[tb_consumer_partition] 
+(
+	[consumerclientid] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_consumer_partition_lastconsumertempid] ON [dbo].[tb_consumer_partition] 
+(
+	[lastconsumertempid] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_consumer_partition_lastmqid] ON [dbo].[tb_consumer_partition] 
+(
+	[lastmqid] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_consumer_partition_partitionid] ON [dbo].[tb_consumer_partition] 
+(
+	[partitionid] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'消费者客户端ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer_partition', @level2type=N'COLUMN',@level2name=N'consumerclientid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'分区表ID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer_partition', @level2type=N'COLUMN',@level2name=N'partitionid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'最后消费的MQID' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer_partition', @level2type=N'COLUMN',@level2name=N'lastmqid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'消费者最后执行时间(以当前库时间为准)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer_partition', @level2type=N'COLUMN',@level2name=N'lastupdatetime'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'消费者分区创建时间(以当前库时间为准)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer_partition', @level2type=N'COLUMN',@level2name=N'createtime'
+GO
+/****** Object:  Table [dbo].[tb_consumer_client]    Script Date: 07/23/2015 09:12:27 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[tb_consumer_client](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[client] [varchar](300) NOT NULL,
+	[createtime] [datetime] NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_consumer_client_client] ON [dbo].[tb_consumer_client] 
+(
+	[client] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_consumer_client_id] ON [dbo].[tb_consumer_client] 
+(
+	[id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'客户端（消费者client，相同业务消费者注册必须一致）' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer_client', @level2type=N'COLUMN',@level2name=N'client'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'当前消费者创建时间(以当前库时间为准)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer_client', @level2type=N'COLUMN',@level2name=N'createtime'
+GO
+/****** Object:  Table [dbo].[tb_consumer]    Script Date: 07/23/2015 09:12:27 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[tb_consumer](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[tempid] [bigint] NOT NULL,
+	[consumerclientid] [int] NOT NULL,
+	[partitionindexs] [varchar](300) NOT NULL,
+	[clientname] [varchar](200) NOT NULL,
+	[lastheartbeat] [datetime] NOT NULL,
+	[lastupdatetime] [datetime] NOT NULL,
+	[createtime] [datetime] NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_consumer_consumerclientid] ON [dbo].[tb_consumer] 
+(
+	[consumerclientid] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_consumer_tempid] ON [dbo].[tb_consumer] 
+(
+	[tempid] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'消费者临时id(消费者启动后唯一,Guid转long)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer', @level2type=N'COLUMN',@level2name=N'tempid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'消费者clinet的id' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer', @level2type=N'COLUMN',@level2name=N'consumerclientid'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'支持的分区顺序号(支持多个顺序号)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer', @level2type=N'COLUMN',@level2name=N'partitionindexs'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'客户端名称' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer', @level2type=N'COLUMN',@level2name=N'clientname'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'最后心跳时间(以当前库时间为准)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer', @level2type=N'COLUMN',@level2name=N'lastheartbeat'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'上一次更新时间(以当前库时间为准)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer', @level2type=N'COLUMN',@level2name=N'lastupdatetime'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'客户端创建时间(以当前库时间为准)' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_consumer', @level2type=N'COLUMN',@level2name=N'createtime'
+GO
+/****** Object:  Table [dbo].[tb_config]    Script Date: 07/23/2015 09:12:27 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[tb_config](
+	[key] [varchar](100) NOT NULL,
+	[value] [varchar](max) NOT NULL,
+	[remark] [varchar](max) NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+CREATE NONCLUSTERED INDEX [IX_tb_config_key] ON [dbo].[tb_config] 
+(
+	[key] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'配置Key' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_config', @level2type=N'COLUMN',@level2name=N'key'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'配置Value' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_config', @level2type=N'COLUMN',@level2name=N'value'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'配置备注信息' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'tb_config', @level2type=N'COLUMN',@level2name=N'remark'
+GO
+/****** Object:  Default [DF_tb_partition_messagequeue_report_mqcount]    Script Date: 07/23/2015 09:12:27 ******/
+ALTER TABLE [dbo].[tb_partition_messagequeue_report] ADD  CONSTRAINT [DF_tb_partition_messagequeue_report_mqcount]  DEFAULT ((0)) FOR [mqcount]
+GO

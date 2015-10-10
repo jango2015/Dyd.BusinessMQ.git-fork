@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "更新";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function sub() {
+        if ($("#name").val() == "") {
+            alert("请填写名称")
+            return false;
+        }
+        if ($("#ip").val() == "") {
+            alert("请填写ip");
+            return false;
+        }
+        if ($("#mqpathid").val() == "") {
+            alert("请填写mqpathid");
+            return false;
+        }
+    }
+</script>
+<div class="head">
+    <div class="title">
+        新增生产者
+    </div>
+</div>
+<div>
+    @using (Html.BeginForm("Update", "Product", FormMethod.Post, new { enctype = "multipart/form-data", @onsubmit = "return sub()" }))
+    {
+    <ul class="mydetail">
+        <input type="hidden" name="id" value="@Model.id" />
+        <li>
+            <label>名称</label><input  type="text" id="productername" name="productername" value="@Model.productername" />
+        </li>
+        <li> 
+            <label>IP</label><input type="text" id="ip" name="ip" value="@Model.ip" />
+        </li>
+        <li>
+            <label>mqpathId</label><input type="text" id="mqpathid" name="mqpathid" value="@Model.mqpathid" />
+        </li>
+        <li>
+            <input type="submit" class="btn1" value="提交" />@Html.ValidationMessage("Error")
+        </li>
+    </ul>
+    }
+</div>

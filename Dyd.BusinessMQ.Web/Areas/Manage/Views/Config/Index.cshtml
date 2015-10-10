@@ -1,0 +1,61 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model List<Dyd.BusinessMQ.Domain.Model.tb_config_model>
+@{
+    ViewBag.Title = "参数配置";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+    @{Html.RegisterMvcPagerScriptResource();}
+}
+<script>
+    function Delete(id) {
+        if (confirm("确定删除吗？")) {
+            $.ajax({
+                url: '@Url.Action("Delete", "Config")',
+                type: "post",
+                data: {
+                    key: id
+                },
+                success: function (data) {
+                    if (data.code > 0) {
+                        alert("成功！");
+                        window.location = window.location;
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }
+    }
+</script>
+<div class="head">
+    <div class="title">
+        参数配置 @Html.Raw(Dyd.BusinessMQ.Web.Base.CommonHelper.Help(@"业务消息队列平台的所有系统参数配置,都在此管理。所有配置的修改都有可能涉及到生产者和消费者的重启,方可生效。配置的缺失或命名大小写不对,都有可能导致系统级的崩溃,所以需谨慎。"))
+    </div>
+</div>
+<div class="orderlist m10 myorder">
+    <a href="@Url.Action("Add", "Config")" class="btn1">新增</a>
+    <div class="List">
+       <table>
+    <tr>
+        <th>Key</th>
+        <th>Value</th>
+        <th>备注</th>
+        <th>操作</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td style="text-align:left">@item.key</td>
+            <td style="text-align:left; width:400px">@item.value</td>
+            <td style="text-align:left;width:500px">@item.remark</td>
+            <td>
+                <a href="@Url.Action("Update", "Config", new { key = @item.key })">修改</a>
+                <input type="button" value="删除" onclick="Delete('@item.key ')" />
+            </td>
+        </tr>
+    }
+</table>
+    </div>
+</div>

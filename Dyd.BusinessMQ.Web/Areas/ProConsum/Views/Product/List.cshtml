@@ -1,0 +1,38 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.manage.tb_producterview_model>      
+
+ <table>
+    <tr>
+        <th>ID</th>
+        <th>临时会话</th>
+        <th>名称</th>
+        <th>IP</th>
+        <th>队列[ID]</th>
+        <th>是否在线</th>
+        <th>创建时间</th>
+        <th>操作</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+           <td>@item.ProducterModel.id</td>
+            <td>@item.ProducterModel.tempid</td>
+            <td>@item.ProducterModel.productername</td>
+            <td>@item.ProducterModel.ip</td>
+            <td>
+              <a target="_blank" href="@Url.Action("Index", "Queue", new { Area="ProConsum",mqpathid=item.ProducterModel.mqpathid })">@item.mqpath [@item.ProducterModel.mqpathid]</a>
+            </td>
+            <td>@Html.Raw(ViewBag.ServerDate-item.ProducterModel.lastheartbeat>TimeSpan.FromSeconds(XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.SystemParamConfig.Producter_HeatBeat_Every_Time)?"离线":"<p style='color:green'>在线</p>")</td>
+             <td>@Dyd.BusinessMQ.Core.CommonHelper.ShowTime(ViewBag.ServerDate, item.ProducterModel.createtime)</td>
+            <td>
+@*                 <a href="@Url.Action("Update", "Product", new { id = @item.ProducterModel.id })">修改</a>*@
+                @if(ViewBag.ServerDate-item.ProducterModel.lastheartbeat>TimeSpan.FromSeconds(10))
+                {<input type="button" value="删除" onclick="Delete('@item.ProducterModel.id')" />}
+            </td>
+        </tr>
+    }
+</table>
+<div class="total pt10">
+    <div class="fl">共<em>@Model.TotalPageCount</em>页<em>@Model.TotalItemCount</em>条记录，当前为第<em>@Model.CurrentPageIndex</em>页</div>
+    @Html.Pager(Model,new PagerOptions{PageIndexParameterName = "pageIndex",ShowPageIndexBox = true,PageIndexBoxType = PageIndexBoxType.TextBox, CssClass="mvcPager"})
+</div>

@@ -1,0 +1,24 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.tb_log_model>
+
+<table class="mytable">
+    <tr>
+        <th style="width:40px;">ID</th>
+        <th style="width:120px">队列名[队列ID]</th>
+        <th style="width:60%">【方法名】具体信息</th>
+        <th style="width:120px;">创建时间</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.id</td>
+            <td style="text-align:left;">@item.mqpath [@(item.mqpathid)]</td>
+            <td  style="text-align:left" title="【@item.methodname】@item.info">【@item.methodname】@item.info</td>
+            <td>@item.createtime</td>
+        </tr>
+    }
+</table>
+<div class="total pt10">
+    <div class="fl">共<em>@Model.TotalPageCount</em>页<em>@Model.TotalItemCount</em>条记录，当前为第<em>@Model.CurrentPageIndex</em>页</div>
+    @Html.Pager(Model,new PagerOptions{PageIndexParameterName = "pageIndex",ShowPageIndexBox = true,PageIndexBoxType = PageIndexBoxType.TextBox, CssClass="mvcPager"})
+</div>

@@ -1,0 +1,74 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.manage.tb_producterview_model>
+@{
+    ViewBag.Title = "生产者管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+    @{Html.RegisterMvcPagerScriptResource();}
+}
+<script>
+    function Delete(id) {
+        if (confirm("确定删除吗？")) {
+            $.ajax({
+                url: '@Url.Action("Delete", "Product")',
+                type: "post",
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    if (data.code > 0) {
+                        alert("成功！");
+                        window.location = window.location;
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }
+    }
+    function DeleteOffLine() {
+        if (confirm("确定要清理部分离线超时的生产者信息吗？")) {
+            $.ajax({
+                url: '@Url.Action("DeleteOffLine", "Product")',
+                type: "post",
+                data: {
+                },
+                success: function (data) {
+                    if (data.code > 0) {
+                        alert("成功！");
+                        window.location = window.location;
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }
+    }
+</script>
+<div class="head">
+    <div class="title">
+        生产者管理  @Html.Raw(Dyd.BusinessMQ.Web.Base.CommonHelper.Help(@"当前队列在线的生产者列表查看"))
+    </div>
+</div>
+<div class="orderlist m10 myorder">
+    @using (Html.BeginForm("Index", "Product", FormMethod.Get, new RouteValueDictionary { { "id", "searchForm" } }))      
+    {
+        <div class="item_list pt10">
+            <div class="item_list">
+                <ul>
+                    <li>
+                        <label>队列名</label><input type="text" class="text midtext" style="width:150px;" name="mqpathid" value="@ViewBag.mqpathid" />
+                    </li>
+                    <li class="search">
+                        <input type="submit" class="btn1" value="搜索" accesskey="S" />  <input type="button" class="btn1" value="清理离线" onclick="DeleteOffLine()" /></li>
+                </ul>
+            </div>
+        </div>
+    }
+   <div class="List">
+            @Html.Partial("List",Model)
+   </div>
+</div>

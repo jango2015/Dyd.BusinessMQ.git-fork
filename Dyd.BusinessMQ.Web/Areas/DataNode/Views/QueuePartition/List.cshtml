@@ -1,0 +1,64 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.manage.MqPathPartitionModel>
+
+<style>
+
+
+        .divhide {
+        overflow:hidden;
+        height:200px;
+        }
+    .divopen {
+    }
+</style>
+<table>
+    <tbody><tr>
+         <th style="width:200px;">队列[ID]</th>
+         <th style="width:60px;">分区序号</th>
+         <th style="width:60px;">分区编号</th>
+         <th style="width:60px;">状态</th>
+        <th style="width:120px;">创建时间</th>
+        <th style="">相关消费者</th>
+        <th>操作</th>
+    </tr>
+        @foreach (var item in Model)
+        {
+           <tr style=" ">
+            <td style="text-align:left;"><a target="_blank" href="@Url.Action("Index", "Queue", new { Area="ProConsum",mqpathid=item.mqpath_partition_model.mqpathid })">@item.mqpath [@item.mqpath_partition_model.mqpathid]</a></td>
+               <td style="text-align:left;">@item.mqpath_partition_model.partitionindex</td>
+             <td style="text-align:left;">@item.mqpath_partition_model.partitionid</td>
+               <td style="text-align:left;">@(Dyd.BusinessMQ.Core.EnumUtils<XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMqPathPartitionState>.GetText((XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMqPathPartitionState)item.mqpath_partition_model.state))</td>
+               <td style="text-align:left;">@Dyd.BusinessMQ.Core.CommonHelper.ShowTime(ViewBag.ServerDate,item.mqpath_partition_model.createtime)</td>
+
+            <td style="text-align:left; vertical-align:top;">
+                @if(ViewBag.consumers !=null)
+                {
+                    var cs = ViewBag.consumers as Dictionary<int, List<Dyd.BusinessMQ.Domain.Model.manage.ConsumerPartitionModel>>;
+                    if (cs.ContainsKey(item.mqpath_partition_model.partitionid))
+                    {
+                        foreach (var o in cs[item.mqpath_partition_model.partitionid])
+                        { <p><a target="_blank" href="@Url.Action("Index", "Consumer", new { Area="ProConsum",consumerclientid=o.consumerpartitionmodel.consumerclientid,partitionid=item.mqpath_partition_model.partitionid })">@o.client (@o.nonMsgCount)未消费/(@o.msgCount)已消费</a></p>} 
+                    }
+                    
+                }
+            </td>
+            <td>
+                @if (item.mqpath_partition_model.partitionindex == item.maxpartitionindex)
+                { 
+                    if (item.mqpath_partition_model.state == (byte)XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMqPathPartitionState.Running)
+                    {<input type="button" value="准备移除" onclick="SetState('@item.mqpath_partition_model.partitionid',@((byte)XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMqPathPartitionState.WaitConsumeCompleted))">}
+                    else
+                    {
+                        <input type="button" value="设置可用" onclick="SetState('@item.mqpath_partition_model.partitionid    ',@((byte)XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMqPathPartitionState.Running))">
+                        <input type="button" value="删除" onclick="    Delete('@item.mqpath_partition_model.id    ')">
+                    }
+                }
+            </td>
+        </tr>
+        }
+</tbody></table>
+<div class="total pt10">
+    <div class="fl">共<em>@Model.TotalPageCount</em>页<em>@Model.TotalItemCount</em>条记录，当前为第<em>@Model.CurrentPageIndex</em>页</div>
+    @Html.Pager(Model, new PagerOptions { PageIndexParameterName = "pageIndex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.TextBox, CssClass = "mvcPager" })
+    @*@Ajax.Pager(Model, new PagerOptions { PageIndexParameterName = "pageindex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false }, new MvcAjaxOptions { UpdateTargetId = "List", HttpMethod = "Post", DataFormId = "searchForm" }, new { @class = "pager_page" })*@
+</div>

@@ -1,0 +1,110 @@
+﻿@{
+    ViewBag.Title = "新增";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Dyd.BusinessMQ.Domain.Model.tb_mqpath_partition_model
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        getMqPath();
+        getNode();
+        getPartition();
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#datanodeid").change(function () {
+            getPartition();
+        });
+    });
+    function getPartition() {
+        $.ajax({
+            url: '/DataNode/QueuePartition/GetPartition',
+            type: 'get',
+            data: {
+                datanodeid: $("#datanodeid").val()
+            },
+            success: function (data) {
+                $("#partitionid").html("");
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#partitionid").append("<option value=\"" + data[i].partitionid + "\">" + data[i].partitionid + "</option>");
+                    }
+                }
+            },
+            async: false,
+            error: function () {
+                alert("你的网络出小差了，请重试。");
+            }
+        });
+    }
+    function getNode() {
+        $.ajax({
+            url: '/DataNode/QueuePartition/GetNode',
+            type: 'get',
+           
+            async: false,
+            success: function (data) {
+                $("#datanodeid").html("");
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#datanodeid").append("<option value=\"" + data[i] + "\">" + data[i] + "</option>");
+                    }
+                }
+            },
+            error: function () {
+                alert("你的网络出小差了，请重试。");
+            }
+        });
+    }
+    function getMqPath() {
+        $.ajax({
+            url: '/DataNode/QueuePartition/GetMqPath',
+            type: 'get',
+            success: function (data) {
+                $("#mqpathid").html("");
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#mqpathid").append("<option value=\"" + data[i].key + "\">" + data[i].value + "</option>");
+                    }
+                }
+            },
+            error: function () {
+                alert("你的网络出小差了，请重试。");
+            }
+        });
+    }
+
+</script>
+<div class="head">
+    <div class="title">
+        新增
+    </div>
+</div>
+<div>
+    @using (Html.BeginForm("Add", "QueuePartition", FormMethod.Post, new { enctype = "multipart/form-data", @onsubmit = "return sub()" }))
+    {
+        <ul class="mydetail">
+            
+             <li><label>所有节点</label><select id="datanodeid" name="datanodeid">
+                </select></li>
+            <li><label>可用分区</label><select id="partitionid" name="partitionid">
+                </select></li>
+            <li><label>队列</label><select id="mqpathid" name="mqpathid">
+                </select></li>
+            @*<li>
+                <label>状态</label><select id="state" name="state">
+                  <option value="1">运行中</option>
+                  <option value="100">等待消费</option>
+                </select>
+            </li>
+             <li>
+                <label>顺序号</label>
+                 <input  type="text" id="partitionindex" name="partitionindex"/>
+            </li>*@
+            <li>
+                <input type="submit" class="btn1" value="提交" />@Html.ValidationMessage("Error")
+            </li>
+        </ul>
+    }
+</div>

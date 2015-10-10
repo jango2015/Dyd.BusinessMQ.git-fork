@@ -1,0 +1,219 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.tb_messagequeue_model>
+@{
+    ViewBag.Title = "消息管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string node = ViewBag.node;
+    string tablepartition = ViewBag.tablepartition;
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#node").change(function () {
+            getPartition();
+            getDaypartition();
+        });
+        $("#tablepartition").change(function () {
+            getDaypartition();
+        });
+        if ($('#mqid').val() != '') {
+            getMQinfo();
+        }
+        else {
+            getNodeList();
+            getPartition();
+            getDaypartition();
+        }
+
+        @Html.Raw(ViewBag.isclick?"":"$('.btn1').click();")
+        //$(".btn1").click();
+    });
+</script>
+<script>
+    function Delete(id,node,tableName) {
+        if (confirm("确定删除吗？")) {
+            $.ajax({
+                url: '@Url.Action("Delete", "Message")',
+                type: "post",
+                data: {
+                    id: id,
+                    node: node,
+                    tableName:tableName
+                },
+                success: function (data) {
+                    if (data.code > 0) {
+                        alert("成功！");
+                        window.location = window.location;
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }
+    }
+    function getNodeList() {
+        $.ajax({
+            url: '/Message/Message/GetNodeList',
+            type: 'get',
+            async: false,
+            success: function (data) {
+                $("#node").html("");
+                if (data) {
+                    for (var i = 0; i <data.length; i++) {
+                        $("#node").append("<option value=\"" + data[i] + "\">" + data[i] + "</option>");
+                    }
+                    if ("@node" != "") {
+                        $("#node").val("@node");
+                      }
+                  
+                }
+            },
+            error: function () {
+                alert("你的网络出小差了，请重试。");
+            }
+        });
+    }
+    function getPartition() {
+        $.ajax({
+            url: '/Message/Message/GetPartitionList',
+            data: { 'node': $("#node").val() },
+            type: 'get',
+            async: false,
+            success: function (data) {
+                $("#tablepartition").html("");
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#tablepartition").append("<option value=\"" + data[i] + "\">" + data[i] + "</option>");
+                    }
+                    if ("@tablepartition" != "") {
+                        $("#tablepartition").val("@tablepartition");
+                       @* alert('@tablepartition');*@
+                      }
+                }
+               
+            },
+            error: function () {
+                alert("你的网络出小差了，请重试。");
+            }
+        });
+    }
+    function getDaypartition() {
+        $.ajax({
+            url: '/Message/Message/GetDayList',
+            data: { 'node': $("#node").val(),'tablepartition': $("#tablepartition").val() },
+            type: 'get',
+            async: false,
+            success: function (data) {
+                $("#daypartition").html("");
+                if (data) {
+                    for (var i = 0; i < data.array.length; i++) {
+                        $("#daypartition").append("<option value=\"" + data.array[i] + "\">" + data.array[i] + "</option>");
+                    }
+                    if ("@ViewBag.daypartition" != "") {
+                        $("#daypartition").val("@ViewBag.daypartition");
+                    }
+                    $('#mqpath').text("队列:" + data.mqpath); 
+                   
+                }
+                else
+                    $('#mqpath').text('');
+            },
+            error: function () {
+                alert("你的网络出小差了，请重试。");
+            }
+        });
+    }
+    function getMQinfo() {
+        if ($('#mqid').val() == '') {
+            //getNodeList();
+        }
+        else {
+            $.ajax({
+                url: '/Message/Message/GetMQInfo',
+                data: { 'mqid': $("#mqid").val() },
+                type: 'get',
+                async: false,
+                success: function (data) {
+                    //alert(data);
+                    if (data) {
+                        getNodeList();
+                        $("#node").val(data.DataNodePartition);
+                        getPartition();
+                        $("#tablepartition").val(data.TablePartition);
+                        getDaypartition();
+                        $("#daypartition").val(data.day);
+
+                    }
+                    else {
+                        $("#node").html(""); $("#tablepartition").html(""); $("#daypartition").html("");
+                    }
+                },
+                error: function () {
+                    alert("你的网络出小差了，请重试。");
+                }
+            });
+        }
+    }
+    function checksubmit() {
+        //alert($('#daypartition').val());
+        if ($('#node').val() == '' || $('#node').val()==null)//$('#tablepartition').val()==''||$('#daypartition').val()==''
+        {
+            alert('数据节点为空');
+            return false;
+        }
+        if ($('#tablepartition').val() == '' || $('#tablepartition').val() == null)
+        {
+            alert('表分区为空');
+            return false;
+        }
+        if ($('#daypartition').val() == '' || $('#daypartition').val() == null)
+        {
+            alert('日分区为空');
+            return false;
+        }
+        return true;
+    }
+</script>
+<div class="head">
+    <div class="title">
+      消息管理 <span style="color:blue; font-weight:100;" id="mqpath"></span>
+         @Html.Raw(Dyd.BusinessMQ.Web.Base.CommonHelper.Help(@"用于查看某个分区的所有消息管理和部分消息的查看,修改,添加。注意:消息是不可删除的，只能被标记为删除状态。
+消息id号命名规则:1+数据节点编号+表分区编号+时间分区号+自增id"))
+    </div>
+</div>
+<div class="orderlist m10 myorder">
+    @using (Html.BeginForm("Index", "Message", FormMethod.Get, new RouteValueDictionary { { "id", "searchForm" } }))      
+    {
+        <div class="item_list pt10">
+            <div class="item_list">
+                <ul>
+                    <li>
+                        消息ID:<input type="text" class="text midtext" style="width:150px;" id="mqid" name="mqid" value="@ViewBag.mqid" onblur="getMQinfo();" />
+@*                        队列： <select id="mqpath" name="mqpath">
+                        </select>*@
+                        数据节点： <select id="node" name="node">
+                        </select>
+                        表分区： <select id="tablepartition" name="tablepartition">
+                        </select>
+                        日分区： <select id="daypartition" name="daypartition">
+
+                        </select>
+                        <input type="hidden" id="isclick" name="isclick" value="true" />
+                    </li>
+                    <li>
+                       
+                    </li>
+                    <li class="search">
+                        <input type="submit" class="btn1" value="搜索" onclick="return checksubmit()" accesskey="S" />
+                    </li>
+                </ul>
+            </div>
+        </div>
+    }
+    <div class="tab_cont">
+          <a href="@Url.Action("Add", "Message")" class="btn1">新增</a>
+        <div class="List">
+            @Html.Partial("List",Model)
+        </div>
+    </div>
+</div>

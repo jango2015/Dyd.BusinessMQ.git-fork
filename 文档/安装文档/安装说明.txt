@@ -1,0 +1,20 @@
+一.数据库部署
+1.安装管理库 --运行sql脚本下dyd_bs_MQ_manage建库脚本
+  1.1 导入tb_config配置 --运行sql脚本下tb_config数据导入脚本
+2.安装日志库 --运行sql脚本下dyd_bs_MQ_log建库脚本
+2.新建消息数据节点 --新建dyd_bs_MQ_datanode_01空数据库
+
+二.安装web管理站点
+
+三.管理站点配置
+1.配置LogDBConnectString,RedisServer,DebugMqpath,MQCreateTableSql对应配置值
+
+四.部署监控任务
+(公司内部监控任务部署至任务调度平台，第三方修改源码部署成windows服务部署。)
+1.ConsumerAbNormalTask 消费者端异常任务 5分钟检查一次
+2.DataAbNormalTask 数据异常任务 1分钟检查一次
+3.MQCreateTableDayTask MQ每日建表任务 1小时检查一次
+4.MQTableCountStatisticsTask所有MQ消息统计任务 10分钟检查一次
+
+五.安装redis
+（百度下载并安装或使用redis-2.4.5-win32-win64.zip）

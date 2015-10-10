@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "新增";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Dyd.BusinessMQ.Domain.Model.tb_config_model
+<script>
+    function sub() {
+        if ($("#value").val() == "") {
+            alert("请填写value");
+            return false;
+        }
+        if ($("#remark").val() == "") {
+            alert("请填写备注");
+            return false;
+        }
+    }
+</script>
+<div class="head">
+    <div class="title">
+        更新配置
+    </div>
+</div>
+<div>
+    @using (Html.BeginForm("Update", "Config", FormMethod.Post, new { enctype = "multipart/form-data", @onsubmit = "return sub()" }))
+    {
+    <ul class="mydetail">
+        <li>
+            <label>key</label><input  type="text" id="key" name="key" value="@Model.key" />
+        </li>
+        <li>
+            <label>value</label><textarea id="value" name="value" style="height:300px; width:500px;">@Model.value</textarea>
+        </li>
+        <li>
+            <label>备注</label><textarea id="remark" name="remark"  style="height:200px; width:500px;">@Model.remark</textarea>
+        </li>
+        <li>
+            <input type="submit" class="btn1" value="提交" />@Html.ValidationMessage("Error")
+        </li>
+    </ul>
+    }
+</div>

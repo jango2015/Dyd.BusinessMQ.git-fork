@@ -1,0 +1,94 @@
+﻿ <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/css/css.css" rel="stylesheet" />
+    <link href="~/Content/HighChartPackCss.css" rel="stylesheet" />
+@*        <link href="~/Content/themes/base/jquery.ui.all.css" rel="stylesheet" />*@
+        <script src="~/Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+@*    <script src="~/Scripts/jquery-ui-1.8.20.min.js"></script>*@
+
+    <script src="~/Scripts/DatePicker/WdatePicker.js"></script>
+    <script src="~/Content/js/common.js"></script>
+    @RenderSection("Styles", false)
+    @RenderSection("Scripts", false)
+</head>
+<body>
+     <div class="header">
+        <span style="color: white; font-size: 25px; margin-left: 25px; font-weight: bold; font-family: 微软雅黑;">点呀点业务消息平台</span>
+        <div class="fr mr10">
+            
+            <span id="toptips" class="remind fl"><span id="toptips1"></span></span>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a href="/login/logout" class="fl">退出</a>
+            }
+            else
+            {
+                <a href="/login/login" class="fl">登录</a>
+            }
+        </div>
+    </div>
+    <div class="content w">
+        <div class="leftmenu fl">
+            <ul class="level1">
+        
+                <li>
+                    <p>队列管理<i></i></p>
+                    <ul class="level2">
+                        <li><a href="@Url.Action("Index", "Queue", new { area="ProConsum" })">队列管理</a></li>
+                    </ul>
+                    <ul class="level2">
+                        <li><a href="@Url.Action("Index", "Product", new { area="ProConsum" })">生产者管理</a></li>
+                    </ul>
+                    <ul class="level2">
+                        <li><a href="@Url.Action("Index", "Consumer", new { area="ProConsum" })">消费者管理</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <p>分区管理<i></i></p>
+                     <ul class="level2">
+                        <li><a href="@Url.Action("Index", "QueuePartition", new { area="DataNode" })">队列分区管理</a></li>
+                    </ul>
+                    <ul class="level2">
+                        <li><a href="@Url.Action("Index", "Node", new { area="DataNode" })">数据节点管理</a></li>
+                    </ul>
+                    <ul class="level2">
+                        <li><a href="@Url.Action("Index", "Partition", new { area="DataNode" })">表分区管理</a></li>
+                    </ul>
+                </li>
+                  <li>
+                    <p>消息管理<i></i></p>
+                    <ul class="level2">
+                        <li><a href="@Url.Action("Index", "Message", new { area="Message" })">消息管理</a></li>
+                    </ul>
+                </li>
+                 <li>
+                    <p>配置管理<i></i></p>
+                    <ul class="level2">
+                        <li><a href="@Url.Action("Index", "Config", new { area="Manage" })">参数配置</a></li>
+                    </ul>
+                </li>
+                  <li>
+                    <p>日志查看<i></i></p>
+                      <ul class="level2">
+                        <li><a href="@Url.Action("ErrorIndex", "Log", new { area="Log" })">错误日志</a></li>
+                    </ul>
+                    <ul class="level2">
+                        <li><a href="@Url.Action("LogIndex", "Log", new { area="Log" })">常用日志</a></li>
+                    </ul>
+                         <ul class="level2">
+                        <li><a href="@Url.Action("DebugIndex", "Log", new { area="Log" })">调试日志</a></li>
+                    </ul>
+                         
+                </li>
+            </ul>
+        </div>
+        <div class="main_cont">
+            @RenderBody()
+        </div>
+    </div>
+</body>
+</html>

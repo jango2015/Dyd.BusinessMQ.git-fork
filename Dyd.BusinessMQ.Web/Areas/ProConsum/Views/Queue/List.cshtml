@@ -1,0 +1,50 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.manage.MqPathModel>
+
+<style>
+
+
+        .divhide {
+        overflow:hidden;
+        height:200px;
+        }
+    .divopen {
+    }
+</style>
+<table>
+    <tbody><tr>
+        <th style="width:200px;">队列</th>
+        <th style="width:300px;">分区信息</th>
+        <th>操作</th>
+    </tr>
+        @foreach (var item in Model)
+        {
+               <tr style=" ">
+            <td style="text-align:left; vertical-align:top;">
+                【ID】@item.id<br>
+                【名称】@item.mqpath<br>
+                【更新】@Dyd.BusinessMQ.Core.CommonHelper.ShowTime(ViewBag.ServerDate,item.lastupdatetime)<br>
+                【创建】@Dyd.BusinessMQ.Core.CommonHelper.ShowTime(ViewBag.ServerDate,item.createtime)<br>
+            </td>
+            <td style="text-align:left; vertical-align:top;"> 
+              <a target="_blank" href="@Url.Action("Index", "Consumer", new { Area="ProConsum",mqpathid=item.id })">【消费者】<span>@item.Connsumer [注册]</span>&nbsp;&nbsp;<span>@item.NonConnsumer [离线]</span></a>
+              <br>
+              <a target="_blank" href="@Url.Action("Index", "Product", new { Area="ProConsum",mqpathid=item.id })">【生产者】<span>@item.ProductCount [在线]</span>&nbsp;&nbsp;<span>@item.NonProductCount [离线]</span></a>
+             <br>
+              <a target="_blank" href="@Url.Action("Index", "QueuePartition", new { Area="DataNode",mqpathid=item.id })">【表分区】<span>@item.Partition [活动]</span>&nbsp;&nbsp;<span>@item.NonPartition [待删]</span></a>
+            </td>
+            <td>
+               @* <a href="/DataNode/Queue/Update/@item.id">修改</a>*@
+                @if (item.Partition <= 0 && @item.NonPartition <= 0 && item.Connsumer <= 0 && item.NonConnsumer <= 0 && item.ProductCount <= 0 && item.NonProductCount <= 0)
+                {<input type="button" value="删除" onclick="Delete('@item.id')">}
+                
+                <input title="重启相关消费者和生产者,可能会导致部分消息重复执行,不建议频繁操作" type="button" value="重启" onclick="ReStart('@item.id    ')">
+            </td>
+        </tr>
+        }
+</tbody></table>
+<div class="total pt10">
+    <div class="fl">共<em>@Model.TotalPageCount</em>页<em>@Model.TotalItemCount</em>条记录，当前为第<em>@Model.CurrentPageIndex</em>页</div>
+    @Html.Pager(Model,new PagerOptions{PageIndexParameterName = "pageindex",ShowPageIndexBox = true,PageIndexBoxType = PageIndexBoxType.TextBox, CssClass="mvcPager"})
+    @*@Ajax.Pager(Model, new PagerOptions { PageIndexParameterName = "pageindex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false }, new MvcAjaxOptions { UpdateTargetId = "List", HttpMethod = "Post", DataFormId = "searchForm" }, new { @class = "pager_page" })*@
+</div>

@@ -1,0 +1,80 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.RegisterdConsumersModel>
+
+<style>
+
+
+        .divhide {
+        overflow:hidden;
+        height:200px;
+        }
+    .divopen {
+    }
+</style>
+<table>
+    <tbody><tr>
+        <th style="">消费者业务标识[ID]</th>
+        <th style="">分区编号(顺序)</th>
+         <th style="">分区队列[ID]</th>
+        <th style="">客户端</th>
+        <th style="">最近消费时间</th>
+        <th style="">最后消费消息ID</th>
+        <th style="">消息消费情况</th>
+        <th style="">创建时间</th>
+        <th>操作</th>
+    </tr>
+        @foreach (var item in Model)
+        {
+         <tr style=" ">
+            <td style="text-align:left;">@item.consumerclientmodel.client [@item.consumerclientmodel.id]</td>
+            <td style="text-align:left;">@item.consumerpartitionmodel.partitionid (@item.consumerpartitionmodel.partitionindex)</td>
+             <td style="text-align:left;"><a target="_blank" href="@Url.Action("Index", "Queue", new { Area="ProConsum",mqpathid=item.mqpathid })">@item.mqpath [@item.mqpathid]</a></td>
+            <td style="text-align:left;">
+                @{int state = 0;}
+                @if (item.consumermodel.tempid  != 0)
+                {
+                    if (ViewBag.ServerDate - item.consumermodel.lastheartbeat < TimeSpan.FromSeconds(10))
+                    {
+                        <span style="color:green" title="会话:@item.consumermodel.tempid,客户端名称:@item.consumermodel.clientname,
+                            创建时间:@Dyd.BusinessMQ.Core.CommonHelper.ShowTime(ViewBag.ServerDate,item.consumermodel.createtime),
+                            最后心跳:@Dyd.BusinessMQ.Core.CommonHelper.ShowTime(ViewBag.ServerDate,item.consumermodel.lastheartbeat)">在线</span>
+                        {state = 1;}
+                    }
+                    else
+                    {
+                        <span style="color:red" title="上次会话:@item.consumerpartitionmodel.lastconsumertempid,客户端名称:@item.consumermodel.clientname,
+                            创建时间:@Dyd.BusinessMQ.Core.CommonHelper.ShowTime(ViewBag.ServerDate, item.consumermodel.createtime),
+                            最后心跳:@Dyd.BusinessMQ.Core.CommonHelper.ShowTime(ViewBag.ServerDate, item.consumermodel.lastheartbeat)">中断</span>
+                    {state = 2;}
+                    }
+                }
+                else
+                {
+                      <span title="上次会话:@item.consumerpartitionmodel.lastconsumertempid">注销</span>
+                    { state = 3; }
+                }
+                
+            </td>
+            <td style="text-align:left;">@Dyd.BusinessMQ.Core.CommonHelper.ShowTime(ViewBag.ServerDate, item.consumerpartitionmodel.lastupdatetime)</td>
+            <td style="text-align:left;"><a target="_blank" href="@Url.Action("Index", "Message", new { Area="Message",mqid=item.consumerpartitionmodel.lastmqid })">@item.consumerpartitionmodel.lastmqid</a></td>
+             <td style="text-align:left;">(@item.nonMsgCount)未消费 (@item.msgCount)已消费</td>
+              <td style="text-align:left;">@Dyd.BusinessMQ.Core.CommonHelper.ShowTime(ViewBag.ServerDate, item.consumerpartitionmodel.createtime)</td>
+            <td>
+                <a href="@Url.Action("UpdateLastMqID", "Consumer", new { id = item.consumerpartitionmodel.id,mqpathid=item.mqpathid     })">重置消息ID</a>
+                 @if (state==2)
+                 {
+                    <input type="button" value="清理相关中断" onclick="ClearNotOnLineByClientID('@item.consumerpartitionmodel.id    ','@item.mqpathid    ')">
+                 }
+                 @if (state==3)
+                 {
+                    <input type="button" value="删除" onclick="Delete('@item.consumerpartitionmodel.id    ','@item.mqpathid    ')">
+                 }
+            </td>
+        </tr>
+        }
+</tbody></table>
+<div class="total pt10">
+    <div class="fl">共<em>@Model.TotalPageCount</em>页<em>@Model.TotalItemCount</em>条记录，当前为第<em>@Model.CurrentPageIndex</em>页</div>
+    @Html.Pager(Model, new PagerOptions { PageIndexParameterName = "pageIndex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.TextBox, CssClass = "mvcPager" })
+    @*@Ajax.Pager(Model, new PagerOptions { PageIndexParameterName = "pageindex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.DropDownList, ShowGoButton = false }, new MvcAjaxOptions { UpdateTargetId = "List", HttpMethod = "Post", DataFormId = "searchForm" }, new { @class = "pager_page" })*@
+</div>

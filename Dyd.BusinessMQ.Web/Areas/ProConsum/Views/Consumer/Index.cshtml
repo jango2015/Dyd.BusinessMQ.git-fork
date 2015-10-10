@@ -1,0 +1,86 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.RegisterdConsumersModel>
+@{
+    ViewBag.Title = "消费者管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function Delete(id, mqpathid) {
+        if (confirm("确定删除,删除后该分区的消费信息无法恢复？")) {
+            $.ajax({
+                url: '@Url.Action("Delete","Consumer")',
+                type: "post",
+                data: {
+                    id: id,
+                    mqpathid: mqpathid
+                },
+                success: function (data) {
+                    if (data.code > 0) {
+                        alert("成功！");
+                        window.location = window.location;
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }
+    }
+    function ClearNotOnLineByClientID(id,mqpathid) {
+        if (confirm("确认当前异常中断的客户端已离线吗,重置后若该客户端依然在线,则该客户端心跳异常？")) {
+            $.ajax({
+                url: '@Url.Action("ClearNotOnLineByClientID","Consumer")',
+                type: "post",
+                data: {
+                    id: id,
+                    mqpathid: mqpathid
+                },
+                success: function (data) {
+                    if (data.code > 0) {
+                        alert("成功！");
+                        window.location = window.location;
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }
+    }
+</script>
+@section Scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @{Html.RegisterMvcPagerScriptResource();}
+}
+<div class="head">
+    <div class="title">
+        消费者管理 @Html.Raw(Dyd.BusinessMQ.Web.Base.CommonHelper.Help(@"用于管理和查看当前队列的业务消费者和消费的分区。注意;删除消费者分区时,请先确保消费者未在线，且消费者的消息已被消费完毕，否则会导致该消费者的消费信息丢失。"))
+    </div>
+</div>
+<div class="orderlist m10 myorder">
+    @using (Html.BeginForm("index", "Consumer", FormMethod.Get, new RouteValueDictionary { { "id", "searchForm" } }))
+    {
+        <div class="item_list pt10">
+            <div class="item_list">
+                <ul>
+                    <li>
+                        <label>消费者业务标识</label><input type="text" name="consumerclientid" value="@ViewBag.consumerclientid" />
+                         <label>分区编号</label><input type="text" name="partitionid" value="@ViewBag.partitionid" />
+                         
+                    </li>
+                    <li>
+                        <label>分区队列</label><input type="text" name="mqpathid" value="@ViewBag.mqpathid" />
+                    </li>
+                    <li class="search">
+                        <input type="submit" class="btn1" value="搜索" accesskey="S" /></li>
+                </ul>
+            </div>
+        </div>
+    }
+   @* <a href="@Url.Action("add", "Consumer")" class="btn1">新增</a>*@
+    <div class="tab_cont">
+        <div class="List">
+            @Html.Partial("List",Model)
+        </div>
+    </div>
+</div>

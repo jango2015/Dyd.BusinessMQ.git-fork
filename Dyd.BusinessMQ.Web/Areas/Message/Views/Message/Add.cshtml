@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "新增";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Dyd.BusinessMQ.Domain.Model.tb_messagequeue_model
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#node").change(function () {
+            getPartition();
+        });
+        $("#tablepartition").change(function () {
+            getDaypartition();
+        });
+        getNodeList();
+    });
+</script>
+<script type="text/javascript">
+    function getNodeList() {
+        $.ajax({
+            url: '/Message/Message/GetNodeList',
+            type: 'get',
+            success: function (data) {
+                $("#node").html("");
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#node").append("<option value=\"" + data[i] + "\">" + data[i] + "</option>");
+                    }
+                    getPartition();
+                }
+            },
+            error: function () {
+                alert("你的网络出小差了，请重试。");
+            }
+        });
+    }
+    function getPartition() {
+        $.ajax({
+            url: '/Message/Message/GetPartitionList',
+            data: { 'node': $("#node").val() },
+            type: 'get',
+            success: function (data) {
+                $("#tablepartition").html("");
+                if (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#tablepartition").append("<option value=\"" + data[i] + "\">" + data[i] + "</option>");
+                    }
+
+                }
+                getDaypartition();
+            },
+            error: function () {
+                alert("你的网络出小差了，请重试。");
+            }
+        });
+    }
+    function getDaypartition() {
+        $.ajax({
+            url: '/Message/Message/GetDayList',
+            data: { 'node': $("#node").val(), 'tablepartition': $("#tablepartition").val() },
+            type: 'get',
+            success: function (data) {
+                $("#daypartition").html("");
+                if (data) {
+                    for (var i = 0; i < data.array.length; i++) {
+                        $("#daypartition").append("<option value=\"" + data.array[i] + "\">" + data.array[i] + "</option>");
+                    }
+                    if ("@ViewBag.daypartition" != "") {
+                        $("#daypartition").val("@ViewBag.daypartition");
+                    }
+                    $('#mqpath').text(data.mqpath);
+                }
+                else
+                    $('#mqpath').text('');
+            },
+            error: function () {
+                alert("你的网络出小差了，请重试。");
+            }
+        });
+    }
+</script>
+<div class="head">
+    <div class="title">
+        新增
+    </div>
+</div>
+<div>
+    @using (Html.BeginForm("Add", "Message", FormMethod.Post, new { enctype = "multipart/form-data", @onsubmit = "return sub()" }))
+    {
+        <ul class="mydetail">
+            <li><label>队列</label><span style="color:blue" id="mqpath"></span></li>
+            <li><label>节点</label><select id="node" name="node">
+                </select></li>
+            <li><label>分区</label><select id="tablepartition" name="tablepartition">
+                </select></li>
+            <li><label>日表</label><select id="daypartition" name="daypartition">
+                </select>
+            </li>
+            <li>
+                <label>状态</label><select id="state" name="state">
+                    @foreach (var o in Dyd.BusinessMQ.Core.EnumUtils<XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMessageState>.GetAllEnumsOfList2())
+                    {<option value="@o.Value">@o.Text</option>}
+                </select>
+            </li>
+            <li>
+                <label>来源</label><select id="source" name="source">
+                    @foreach (var o in Dyd.BusinessMQ.Core.EnumUtils<XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMessageSource>.GetAllEnumsOfList2())
+                    {<option value="@o.Value">@o.Text</option>}
+                </select>
+            </li>
+            <li>
+                <label>消息内容</label><textarea id="message" name="message" style="height: 200px; width: 500px;"></textarea>
+            </li>
+            <li>
+                <input type="submit" class="btn1" value="提交" />@Html.ValidationMessage("Error")
+            </li>
+        </ul>
+    }
+</div>

@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{38E1AF24-7449-43B2-BBD7-91A8D686E1DB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dyd.BusinessMQ.Domain</RootNamespace>
+    <AssemblyName>Dyd.BusinessMQ.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Common, Version=1.0.4198.20620, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\引用\ServiceStack.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Interfaces, Version=1.0.4198.20619, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\引用\ServiceStack.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Redis, Version=2.2.0.20691, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\引用\ServiceStack.Redis.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.Text, Version=2.2.6.20579, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\引用\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WebGrease">
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="XXF, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\引用\XXF.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Dal\datanode\auto\tb_messagequeue_dal.cs" />
+    <Compile Include="Dal\datanode\tb_messagequeue_dal.cs" />
+    <Compile Include="Dal\log\auto\tb_debuglog_dal.cs" />
+    <Compile Include="Dal\log\auto\tb_error_dal.cs" />
+    <Compile Include="Dal\log\auto\tb_log_dal.cs" />
+    <Compile Include="Dal\log\tb_debug_dal.cs" />
+    <Compile Include="Dal\log\tb_error_dal.cs" />
+    <Compile Include="Dal\log\tb_log_dal.cs" />
+    <Compile Include="Dal\manage\auto\tb_config_dal.cs" />
+    <Compile Include="Dal\manage\auto\tb_consumer_client_dal.cs" />
+    <Compile Include="Dal\manage\auto\tb_consumer_dal.cs" />
+    <Compile Include="Dal\manage\auto\tb_consumer_partition_dal.cs" />
+    <Compile Include="Dal\manage\auto\tb_datanode_dal.cs" />
+    <Compile Include="Dal\manage\auto\tb_mqpath_dal.cs" />
+    <Compile Include="Dal\manage\auto\tb_mqpath_partition_dal.cs" />
+    <Compile Include="Dal\manage\auto\tb_partition_dal.cs" />
+    <Compile Include="Dal\manage\auto\tb_partition_messagequeue_report_dal.cs" />
+    <Compile Include="Dal\manage\auto\tb_producter_dal.cs" />
+    <Compile Include="Dal\manage\tb_config_dal.cs" />
+    <Compile Include="Dal\manage\tb_consumer_client_dal.cs" />
+    <Compile Include="Dal\manage\tb_consumer_dal.cs" />
+    <Compile Include="Dal\manage\tb_consumer_partition_dal.cs" />
+    <Compile Include="Dal\manage\tb_datanode_dal.cs" />
+    <Compile Include="Dal\manage\tb_mqpath_dal.cs" />
+    <Compile Include="Dal\manage\tb_mqpath_partition_dal.cs" />
+    <Compile Include="Dal\manage\tb_partition_dal.cs" />
+    <Compile Include="Dal\manage\tb_partition_messagequeue_report_dal.cs" />
+    <Compile Include="Dal\manage\tb_producter_dal.cs" />
+    <Compile Include="DataConfig.cs" />
+    <Compile Include="Model\datanode\auto\tb_messagequeue_model.cs" />
+    <Compile Include="Model\log\auto\tb_debuglog_model.cs" />
+    <Compile Include="Model\log\auto\tb_error_model.cs" />
+    <Compile Include="Model\log\auto\tb_log_model.cs" />
+    <Compile Include="Model\manage\auto\tb_config_model.cs" />
+    <Compile Include="Model\manage\auto\tb_consumer_client_model.cs" />
+    <Compile Include="Model\manage\auto\tb_consumer_model.cs" />
+    <Compile Include="Model\manage\auto\tb_consumer_partition_model.cs" />
+    <Compile Include="Model\manage\auto\tb_datanode_model.cs" />
+    <Compile Include="Model\manage\auto\tb_mqpath_model.cs" />
+    <Compile Include="Model\manage\auto\tb_mqpath_partition_model.cs" />
+    <Compile Include="Model\manage\auto\tb_partition_messagequeue_report_model.cs" />
+    <Compile Include="Model\manage\auto\tb_partition_model.cs" />
+    <Compile Include="Model\manage\auto\tb_producter_model.cs" />
+    <Compile Include="Model\manage\ConsumerModel.cs" />
+    <Compile Include="Model\manage\ConsumerPartition.cs" />
+    <Compile Include="Model\manage\ConsumerPartitionModel.cs" />
+    <Compile Include="Model\manage\MqPathModel.cs" />
+    <Compile Include="Model\manage\MqPathPartitionModel.cs" />
+    <Compile Include="Model\manage\RegisterdConsumersModel.cs" />
+    <Compile Include="Model\manage\tb_producterview_model.cs" />
+    <Compile Include="Model\manage\tb_user_model.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dyd.BusinessMQ.Core\Dyd.BusinessMQ.Core.csproj">
+      <Project>{027b34b4-15dd-46c2-86e5-ad0c75583ef6}</Project>
+      <Name>Dyd.BusinessMQ.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XXF.BaseService.MessageQuque\XXF.BaseService.MessageQuque.csproj">
+      <Project>{41db8783-c049-42fe-8723-efa314b6f07b}</Project>
+      <Name>XXF.BaseService.MessageQuque</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

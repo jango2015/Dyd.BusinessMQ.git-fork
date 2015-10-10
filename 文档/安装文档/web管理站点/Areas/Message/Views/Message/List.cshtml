@@ -1,0 +1,35 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.tb_messagequeue_model>      
+
+ <table>
+    <tr>
+        <th>消息ID</th>
+        <th style="width:170px">创建时间</th>
+        <th style="width:100px">状态/来源</th>
+        <th style="width:50%">消息内容</th>
+        <th>操作</th>
+    </tr>
+     @if(Model!=null)
+     {
+    foreach (var item in Model)
+    {
+        <tr>
+           <td>@item.id</td>
+            <td style="text-align:left">应用:@item.mqcreatetime<br/>标准:@item.sqlcreatetime</td>
+            <td style="text-align:left">
+              状态:@(Dyd.BusinessMQ.Core.EnumUtils<XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMessageState>.GetText(((XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMessageState)item.state)))<br/>
+                来源:@(Dyd.BusinessMQ.Core.EnumUtils<XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMessageSource>.GetText(((XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMessageSource)item.source)))
+            </td>
+            <td style="text-align:left">@item.message</td>
+            <td>
+                 <a href="@Url.Action("Update", "Message", new { id = @item.id,node=@ViewBag.node })">修改</a>
+               @* <input type="button" value="标记删除" onclick="Delete('@item.id','@ViewBag.node','@ViewBag.tableName')" />*@
+            </td>
+        </tr>
+    }
+     }
+</table>
+<div class="total pt10">
+    <div class="fl">共<em>@Model.TotalPageCount</em>页<em>@Model.TotalItemCount</em>条记录，当前为第<em>@Model.CurrentPageIndex</em>页</div>
+    @Html.Pager(Model,new PagerOptions{PageIndexParameterName = "pageIndex",ShowPageIndexBox = true,PageIndexBoxType = PageIndexBoxType.TextBox, CssClass="mvcPager"})
+</div>

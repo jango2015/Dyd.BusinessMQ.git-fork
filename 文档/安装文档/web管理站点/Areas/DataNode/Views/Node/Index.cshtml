@@ -1,0 +1,42 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.tb_datanode_model>
+@{
+    ViewBag.Title = "数据节点管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+    @{Html.RegisterMvcPagerScriptResource();}
+}
+<script>
+    function Delete(id) {
+        if (confirm("确定删除吗？")) {
+            $.ajax({
+                url: '@Url.Action("Delete", "Node")',
+                type: "post",
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    if (data.code > 0) {
+                        alert("成功！");
+                        window.location = window.location;
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                }
+            })
+        }
+    }
+</script>
+<div class="head">
+    <div class="title">
+        数据节点管理 @Html.Raw(Dyd.BusinessMQ.Web.Base.CommonHelper.Help(@"数据库节点的管理,注意:新增和修改的数据库节点,需要重启相应的队列方可生效;删除管理节点,需先删除管理节点下面的所有分区。"))
+    </div>
+</div>
+<div class="orderlist m10 myorder">
+    <a href="@Url.Action("Add", "Node")" class="btn1">新增</a>
+   <div class="List">
+            @Html.Partial("List",Model)
+        </div>
+</div>

@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "重置最后MQID";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function sub() {
+        if ($("#key").val() == "") {
+            alert("请填写名称")
+            return false;
+        }
+        if ($("#value").val() == "") {
+            alert("请填写value");
+            return false;
+        }
+        if ($("#remark").val() == "") {
+            alert("请填写备注");
+            return false;
+        }
+    }
+</script>
+<div class="head">
+    <div class="title">
+        重置最后消费消息ID
+    </div>
+</div>
+<div>
+    @using (Html.BeginForm("SaveUpdateLastMqID", "Consumer", FormMethod.Post, new { enctype = "multipart/form-data", @onsubmit = "return sub()" }))
+    {
+    <ul class="mydetail">
+        <li>
+            <input type="hidden" id="id" name="id" value="@ViewBag.id" /><input type="hidden" id="mqpathid" name="mqpathid" value="@ViewBag.mqpathid" />
+        </li>
+        <li>
+            <label>最后消费的消息ID</label><input id="lastmqid" name="lastmqid" type="text" value="@ViewBag.lastmqid" />
+        </li>
+        <li>
+            <input type="submit" class="btn1" value="提交" />@Html.ValidationMessage("Error")
+        </li>
+    </ul>
+    }
+</div>

@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "更新";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Dyd.BusinessMQ.Domain.Model.tb_messagequeue_model
+<script type="text/javascript">
+    $(document).ready(function () {
+        init();
+    });
+</script>
+<script>
+    function sub() {
+        if ($("#message").val() == "") {
+            alert("请填写名称")
+            return false;
+        }
+    }
+    function init() {
+        $("#state").val("@Model.state");
+        $("#source").val("@Model.source");
+    }
+</script>
+<div class="head">
+    <div class="title">
+        修改消息
+    </div>
+</div>
+<div>
+    @using (Html.BeginForm("update", "Message", FormMethod.Post, new { enctype = "multipart/form-data", @onsubmit = "return sub()" }))
+    {
+        <ul class="mydetail">
+            <input  type="hidden" name="id" value="@Model.id"/>
+            <input  type="hidden" name="node"  value="@ViewBag.node"/>
+            <input  type="hidden" name="tableName" value="@ViewBag.tableName"/>
+            <li>
+                <label>状态</label><select id="state" name="state">
+                    @foreach (var o in Dyd.BusinessMQ.Core.EnumUtils<XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMessageState>.GetAllEnumsOfList2())
+                    {<option value="@o.Value" @((o.Value==Model.state+"")?"selected='selected'":"")>@o.Text</option>}
+                </select>
+            </li>
+            <li>
+                <label>来源</label><select id="source" name="source">
+                    @foreach (var o in Dyd.BusinessMQ.Core.EnumUtils<XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.EnumMessageSource>.GetAllEnumsOfList2())
+                    {<option value="@o.Value"  @((o.Value==Model.source+"")?"selected='selected'":"")>@o.Text</option>}
+                </select>
+            </li>
+
+            <li>
+                <label>消息内容</label><textarea id="message" name="message" style="height: 200px; width: 500px;">@Model.message</textarea>
+            </li>
+            <li>
+                <input type="submit" class="btn1" value="提交" />@Html.ValidationMessage("Error")
+            </li>
+        </ul>
+    }
+</div>

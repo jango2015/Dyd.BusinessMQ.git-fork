@@ -1,0 +1,17 @@
+USE [dyd_bs_MQ_manage]
+INSERT [dbo].[tb_config] ([key], [value], [remark]) VALUES (N'RedisServer', N'192.168.17.54:6379', N'【系统必须】
+Redis发布订阅通讯专用,密码为空
+(修改建议重启所有队列)')
+INSERT [dbo].[tb_config] ([key], [value], [remark]) VALUES (N'DebugMqpath', N'dyd.mytest', N'【系统必须】需要调试日志的mqpath，配置后调试信息打印到调试日志里面。允许为空（修改下一次心跳生效）')
+INSERT [dbo].[tb_config] ([key], [value], [remark]) VALUES (N'LogDBConnectString', N'server=192.168.17.201;Initial Catalog=dyd_bs_MQ_log;User ID=sa;Password=Xx~!@#;', N'【系统必须】日志记录数据库连接字符串配置(修改建议重启所有队列)')
+INSERT [dbo].[tb_config] ([key], [value], [remark]) VALUES (N'MQCreateTableSql', N'CREATE TABLE [dbo].[tb_messagequeue_{tablepartiton}_{daypartition}](
+	[id] [bigint] IDENTITY(1{datanodepartiton}{tablepartiton}{daypartition}00000001,1) NOT NULL,
+	[mqcreatetime] [datetime] NOT NULL,
+	[sqlcreatetime] [datetime] NOT NULL,
+	[state] [tinyint] NOT NULL,
+	[source] [tinyint] NOT NULL,
+	[message] [varchar](max) NOT NULL
+) ON [PRIMARY]
+-- 创建聚集索引  
+CREATE CLUSTERED INDEX   
+  id_{tablepartiton}_{daypartition} ON [tb_messagequeue_{tablepartiton}_{daypartition}]([id])', N'【系统必须】每日创建已使用分区的消息表的建表sql')

@@ -1,0 +1,33 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.tb_partition_model>      
+
+ <table>
+    <tr>
+        <th>分区编号</th>
+        <th>节点编号</th>
+        <th>表分区编号</th>
+        <th>使用状态</th>
+        <th>创建时间</th>
+        <th>操作</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.partitionid</td>@{ var pidinfo = XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.PartitionRuleHelper.GetPartitionIDInfo(item.partitionid);}
+            <td>@XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.PartitionRuleHelper.PartitionNameRule(pidinfo.DataNodePartition)</td>
+            <td>@XXF.BaseService.MessageQuque.BusinessMQ.SystemRuntime.PartitionRuleHelper.PartitionNameRule(pidinfo.TablePartition)</td>
+            <td>@Html.Raw(item.isused?"<p style='color:green'>使用中</p>":"未使用")</td>
+            <td>@Dyd.BusinessMQ.Core.CommonHelper.ShowTime(ViewBag.ServerDate, item.createtime)</td>
+            <td>
+             @*   <a href="">队列详情</a>*@
+                @if (item.isused == false)
+                { 
+                <input type="button" value="删除" onclick="Delete('@item.partitionid')" />}
+            </td>
+        </tr>
+    }
+</table>
+<div class="total pt10">
+    <div class="fl">共<em>@Model.TotalPageCount</em>页<em>@Model.TotalItemCount</em>条记录，当前为第<em>@Model.CurrentPageIndex</em>页</div>
+    @Html.Pager(Model, new PagerOptions { PageIndexParameterName = "pageIndex", ShowPageIndexBox = true, PageIndexBoxType = PageIndexBoxType.TextBox, CssClass = "mvcPager" })
+</div>

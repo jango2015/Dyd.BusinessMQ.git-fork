@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "新增";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Dyd.BusinessMQ.Domain.Model.tb_datanode_model
+<script>
+    function sub() {
+        if ($("#datanodepartition").val() == "") {
+            alert("请填写节点")
+            return false;
+        }
+        if ($("#serverip").val() == "") {
+            alert("请填写ip");
+            return false;
+        }
+        if ($("#username").val() == "") {
+            alert("请填写用户名");
+            return false;
+        }
+        if ($("#password").val() == "") {
+            alert("请填写密码");
+            return false;
+        }
+    }
+</script>
+<div class="head">
+    <div class="title">
+        新增节点
+    </div>
+</div>
+<div>
+    @using (Html.BeginForm("Update", "Node", FormMethod.Post, new { enctype = "multipart/form-data", @onsubmit = "return sub()" }))
+    {
+    <ul class="mydetail">
+        <input name="id" value="@Model.id" type="hidden"/>
+        <li>
+            <label>节点编号</label><input  type="text" id="datanodepartition" name="datanodepartition" readonly="readonly" value="@Model.datanodepartition" />（不可重复 01~99之间）
+        </li>
+        <li>
+            <label>IP</label><input type="text" id="serverip" name="serverip" value="@Model.serverip" />
+        </li>
+        <li>
+            <label>用户名</label><input type="text" id="username" name="username" value="@Model.username" />
+        </li>
+         <li>
+            <label>密码</label><input type="text" id="password" name="password" value="@Model.password" />
+        </li>
+        <li>
+            <input type="submit" class="btn1" value="提交" />@Html.ValidationMessage("Error")
+        </li>
+    </ul>
+    }
+</div>

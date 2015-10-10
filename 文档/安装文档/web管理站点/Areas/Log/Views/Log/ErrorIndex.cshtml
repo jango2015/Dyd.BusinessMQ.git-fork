@@ -1,0 +1,41 @@
+﻿@using Webdiyer.WebControls.Mvc
+@model PagedList<Dyd.BusinessMQ.Domain.Model.tb_error_model>
+@{
+    ViewBag.Title = "错误日志";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="head">
+    <div class="title">
+        错误日志 @Html.Raw(Dyd.BusinessMQ.Web.Base.CommonHelper.Help(@"整个消息队列平台的生产者和消费者错误日志将同步到此环境,频繁的系统错误需要运维及时处理,否则会影响消息传递的性能!"))
+    </div>
+</div>
+<div class="orderlist m10 myorder">
+    @using (Html.BeginForm("ErrorIndex", "Log", FormMethod.Get, new RouteValueDictionary { { "id", "searchForm" } }))      
+    {
+        <div class="item_list pt10">
+            <div class="item_list">
+                <ul>
+                    <li>
+                        <label>时间</label><input type="text" class="text midtext" style="width:150px;" name="startTime" value="@ViewBag.startTime.ToString("yyyy-MM-dd")" />-<input type="text" class="text midtext"  style="width:150px;" name="endTime" value="@ViewBag.endTime.ToString("yyyy-MM-dd")" />
+                    </li>
+                    <li>
+                        <label>队列名/ID</label><input type="text" class="text midtext" style="width:150px;" name="mqpathid" value="@ViewBag.mqpathid" />
+                    </li>
+                    <li>
+                        <label>方法名</label><input type="text" class="text midtext" style="width:200px;" name="methodname" value="@ViewBag.methodname" />
+                    </li>
+                    <li>
+                        <label>详细信息</label><input type="text" class="text midtext" style="width:200px;" name="info" value="@ViewBag.info" />
+                    </li>
+                    <li class="search">
+                        <input type="submit" class="btn1" value="搜索" accesskey="S" />&nbsp;&nbsp;<input type="button" onclick="DeleteLog('@Url.Action("ErrorDeleteAll","Log")')" class="btn1" value="清空日志" accesskey="S" /></li>
+                </ul>
+            </div>
+        </div>
+    }
+    <div class="tab_cont">
+        <div class="List">
+            @Html.Partial("ErrorList",Model)
+        </div>
+    </div>
+</div>

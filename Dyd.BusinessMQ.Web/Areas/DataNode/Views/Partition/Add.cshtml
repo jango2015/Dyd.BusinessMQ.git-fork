@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = "新增表分区";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function sub() {
+        if ($("#partitionId").val() == "") {
+            alert("请填写分区")
+            return false;
+        }
+    }
+</script>
+<div class="head">
+    <div class="title">
+        新增表分区
+    </div>
+</div>
+<div>
+    @using (Html.BeginForm("Add", "Partition", FormMethod.Post, new { enctype = "multipart/form-data", @onsubmit = "return sub()" }))
+    {
+    <ul class="mydetail">
+        <li>
+            <label>节点编号</label><select id="nodeid" name="nodeid" onchange="changenode()" >
+                @foreach (var o in ViewBag.datanodes)
+                { 
+                    <option @(o.datanodepartition==ViewBag.nodeId?"selected=='selected'":"")>@o.datanodepartition</option>
+                }
+            </select></li>
+       
+        <li>
+            <label>添加数量</label><select id="count" name="count">
+                
+            </select>
+        </li>
+        <li>
+            <input type="submit" class="btn1" value="提交" />@Html.ValidationMessage("Error")
+        </li>
+    </ul>
+    }
+</div>
+<script type="text/javascript">
+    function changenode()
+    {
+        //alert($('#nodeid').val());
+        var nodeid = $('#nodeid').val();
+        $.ajax({
+            url: '@Url.Action("PartitionsCount","Partition")',
+            type: "post",
+            data: {
+                nodeid:nodeid
+            },
+            success: function (data) {
+                if (data.code > 0) {
+                    for (var i = 1; i < (100-data.count); i++)
+                    {
+                        $("<option value='"+ i+"'>"+i+"</option>").appendTo("#count")//添加下拉框的option
+                    }
+                }
+                else {
+                    alert("加载出错");
+                }
+            }
+        })
+    }
+    $(function () {
+        changenode();
+    });
+</script>

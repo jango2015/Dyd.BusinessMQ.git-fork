@@ -1,0 +1,32 @@
+﻿@model Dyd.BusinessMQ.Domain.Model.tb_mqpath_model
+@{
+    ViewBag.Title = "修改";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function sub() {
+        if ($("#mqpath").val() == "") {
+            alert("请填写名称");
+            return false;
+        }
+    }
+</script>
+<div class="head">
+    <div class="title">
+       修改队列
+    </div>
+</div>
+<div>
+    @using (Html.BeginForm("Add", "Queue", FormMethod.Post, new { enctype = "multipart/form-data", @onsubmit = "return sub()" }))
+    {
+    <ul class="mydetail">
+      <input  type="hidden" id="id" name="id"  value="@Model.id" />
+        <li> 
+            <label>名称</label><input type="text" id="mqpath" name="mqpath" value="@Model.mqpath" />
+        </li>
+        <li>
+            <input type="submit" class="btn1" value="提交" />@Html.ValidationMessage("Error")
+        </li>
+    </ul>
+    }
+</div>
