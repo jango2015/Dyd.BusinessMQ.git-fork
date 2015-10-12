@@ -1,6 +1,8 @@
 ## 业务消息队列 ##
 业务消息队列是应用于业务的解耦和分离，应具备分布式，高可靠性，高性能，高实时性，高稳定性，高扩展性等特性。
 
+开源QQ群: .net 开源基础服务  238543768
+
 ## 优点: ##
 - 大量的业务消息堆积能力
 - 无单点故障及故障监控，异常提醒
@@ -64,3 +66,119 @@
 1.  未来采用leveldb重写存储。
 1.  剥离broker服务用于支持相对可靠的消息服务。
 1.  消息完成标记本地缓存/持久化（或者存储redis）,每秒提交更新至数据库,消除频繁消费导致的瓶颈。
+
+## 使用demo示例 ##
+
+        /// <summary>
+        /// 发送消息
+        /// </summary>
+        /// <param name="msg"></param>
+        public void SendMessageDemo(string msg)
+        {
+            //发送字符串示例
+            var p = ProducterPoolHelper.GetPool(new BusinessMQConfig() { ManageConnectString = "server=192.168.17.201;Initial Catalog=dyd_bs_MQ_manage;User ID=sa;Password=Xx~!@#;" },//管理中心数据库
+                "dyd.mytest3");//队列路径 .分隔,类似类的namespace,是队列的唯一标识，要提前告知运维在消息中心注册，方可使用。
+            p.SendMessage(@"1");
+            //发送对象示例
+            /* var obj = new message2 { text = "文字", num = 1 };
+              var p = ProducterPoolHelper.GetPool(new BusinessMQConfig() { ManageConnectString = "server=192.168.17.237;Initial Catalog=dyd_bs_MQ_manage;User ID=sa;Password=Xx~!@#;" },//管理中心数据库
+                "test.diayadian.obj");//队列路径 .分隔,类似类的namespace,是队列的唯一标识，要提前告知运维在消息中心注册，方可使用。
+            p.SendMessage<message>(obj);
+            */
+        }
+
+        private ConsumerProvider Consumer;
+        /// <summary>
+        /// 接收消息
+        /// </summary>
+        /// <param name="action"></param>
+        public void ReceiveMessageDemo(Action<string> action)
+        {
+            if (Consumer == null)
+            {
+                Consumer = new ConsumerProvider();
+                Consumer.Client = "dyd.mytest3.customer1";//clientid,接收消息的(消费者)唯一标示,一旦注册以后，不能更改，业务下线废弃后必须要告知运维，删除消费者注册。
+                Consumer.ClientName = "客户端名称";//这个相对随意些，主要是用来自己识别的，要简短
+                Consumer.Config = new BusinessMQConfig() { ManageConnectString = "server=192.168.17.201;Initial Catalog=dyd_bs_MQ_manage;User ID=sa;Password=Xx~!@#;" };
+                Consumer.MaxReceiveMQThread = 1;//并行处理的线程数,一般为1足够,若消息处理慢,又想并行消费,则考虑 正在使用的分区=并行处理线程数 为并行效率极端最优,但cpu消耗应该不小。
+                Consumer.MQPath = "dyd.mytest3";//接收的队列要正确
+                Consumer.PartitionIndexs = new List<int>() { 1, 2, 3,4, 5, 6, 7, 8 };//消费者订阅的分区顺序号,从1开始
+                Consumer.RegisterReceiveMQListener<string>((r) =>
+                {
+                    /*
+                       * 这些编写业务代码
+                       * 编写的时候要注意考虑，业务处理失败的情况。
+                       * 1.重试失败n次。
+                       * 2.重试还不行，则标记消息已被处理。然后跳过该消息处理，自己另外文档记录这种情况。
+                       * 消息被消费完毕，一定要调用MarkFinished，标记消息被消费完毕。
+                       */
+                    action.Invoke(r.ObjMsg);
+                    r.MarkFinished();
+                });
+            }
+
+        }
+        /// <summary>
+        /// 关闭消息订阅连接
+        /// </summary>
+        public void CloseReceiveMessage()
+        {
+            //注册消费者消息,消费者务必要在程序关闭后关掉（dispose）。否则导致异常终止,要人工等待连接超时后，方可重新注册。
+            if (Consumer != null)
+            {
+                Consumer.Dispose();
+                Consumer = null;
+            }
+        }
+    }
+
+## 架构示意图 ##
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/145450_Em3s_2379842.png" style="float:none;"/>
+</p>
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/145450_Oxip_2379842.jpg" style="float:none;"/>
+</p>
+
+
+## 部分界面截图 ##
+
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/142145_qiqA_2379842.png" style="float:none;"/>
+</p>
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/142145_NQhy_2379842.png" style="float:none;"/>
+</p>
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/142146_VQ8T_2379842.png" style="float:none;"/>
+</p>
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/142146_OKgo_2379842.png" style="float:none;"/>
+</p>
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/142146_4Xar_2379842.png" style="float:none;"/>
+</p>
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/142146_GWQw_2379842.png" style="float:none;"/>
+</p>
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/142146_jUmI_2379842.png" style="float:none;"/>
+</p>
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/142147_E22K_2379842.png" style="float:none;"/>
+</p>
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/142147_ob1w_2379842.png" style="float:none;"/>
+</p>
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/142147_flVv_2379842.png" style="float:none;"/>
+</p>
+<p>
+    <img src="http://static.oschina.net/uploads/space/2015/1012/142147_oTPB_2379842.png" style="float:none;"/>
+</p>
+
+
+## 测试文档 ##
+查看开源项目 “文档”目录
+## 安装文档 ##
+查看开源项目 “文档”目录
